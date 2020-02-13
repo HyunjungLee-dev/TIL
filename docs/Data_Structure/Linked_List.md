@@ -12,6 +12,8 @@
 
 <img src="https://img.shields.io/badge/Update-20.01.13-blue" align = "left">
 
+
+
 #### 단순 연결 리스트(Single Linked List)
 
 - 단순 연결 리스트의 ADT : ArrayList를 구현과 차이는 없고 정렬 기능만 추가
@@ -42,7 +44,9 @@
 
 <img src="https://img.shields.io/badge/Update-20.01.14-blue" align = "left">
 
-#### Dummy Node 추가해보기
+
+
+#### Dummy Node _단순 연결 리스트(Single Linked List)
 
 ```c++
 head = (Node*)malloc(sizeof(Node)); /*더미노드*/
@@ -68,6 +72,8 @@ tail = head;
 
 
 <img src="https://img.shields.io/badge/Update-20.01.15-blue" align = "left">
+
+
 
 #### 단순 연결 리스트 정렬 삽입
 
@@ -98,6 +104,8 @@ typedef struct_linkedList
 
 <img src="https://img.shields.io/badge/Update-20.01.17-blue" align = "left">
 
+
+
 #### 원형 연결 리스트 (Circular linked list)
 
 Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 존재하게 된다면 tail이 마지막 지점이면서 tail->next가 시작점이 된다. 또한 Node를 추가 할 때 두 가지 방법이 있는데 머리에 추가하느냐(tail->next 부분이 된다) 꼬리에 추가 하느냐 tail이 추가한 Node가 된다. (tail의 위치가 달리지는 것) // 블로그 참고 
@@ -112,6 +120,8 @@ Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 �
 
 
 <img src="https://img.shields.io/badge/Update-20.01.20-blue" align = "left">
+
+
 
 #### 양방향 연결 리스트(Double LinkedList )
 
@@ -133,7 +143,7 @@ Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 �
 
 <img src="https://img.shields.io/badge/Update-20.01.21-blue" align = "left">
 
-#### 양방향 연결 리스트(Double LinkedList )_Dummy Node
+#### Dummy Node_양방향 연결 리스트(Double LinkedList )
 
 기존의 양방향 연결 리스트에서 더미노드 기반 연결 리스트를 구현할 때 코드를 추가/변경 해야하는 부분
 

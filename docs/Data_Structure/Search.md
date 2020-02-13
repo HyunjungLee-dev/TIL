@@ -202,8 +202,3 @@ BTreeNode * BSTRemove(BTreeNode ** pRoot, BSTData target)
 > https://hongku.tistory.com/160
 >
 > http://blog.naver.com/ckkg45/220599534697
-
-
-
-> Update 20.02.13
-

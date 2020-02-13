@@ -1,6 +1,6 @@
 <img src="https://img.shields.io/badge/Update-20.01.14-blue" align = "left">
 
-#### Gitblog post 오류 수정**
+#### Gitblog post 오류 수정
 
 오류 : 블로그에 글은 올라갔는데 타이틀과 태그, 카테고리 적용이 안됨
 
@@ -21,6 +21,8 @@ title: Blogging Like a Hacker
 
 
 <img src="https://img.shields.io/badge/Update-20.01.18-blue" align = "left">
+
+
 
 - 링크가 안 걸리는 것
   - [] () 를 이용해서 다시 눌렀을 때 링크로 이동되도록 수정했다.
