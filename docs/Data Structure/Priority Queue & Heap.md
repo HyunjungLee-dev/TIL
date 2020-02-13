@@ -1,63 +1,4 @@
-### 0203
-
-### 트리(TREE)
-
-트리는 계층적 관계를 표현한 비선형 자료구조로 선형구조는 자료를 저장하고 꺼내는 것에 초점이 맞춰져 있지만 비선형 구조는 저장과 반환, 표현에 초점이 맞춰져있다. 
-
-#### **트리 관련 용어**
-
-- 노드 Node 
-- 간선 Edge
-- 루트 노드 Root Node
-- 단말 노드 Terminal Node / 잎사귀 노드 Leaf Node 
-- 내부 노드 Internal Node 
-- 부모 노드
-- 자식 노드
-- 형제 Sibling
-- 레벨 
--  높이 
-- 서브 트리 Sub-Tree 
-
-#### **이진 트리**
-
-자식이 두 개씩 달린 트리를 이진 트리라고 한다. 노드가 위치할 수 있는 곳에 노드가 존재하지 않는다면, 공집합 노드가 존재하는 것으로 생각한다. 이 공집합을 포함해서 이진 트리 노드인지 함께 판단한다.
-
-**이진 트리의 종류**
-
-- 포화 이진 트리 Perfect binary tree
-- 완전 이진 트리 Complete binary tree
-- 정 이진 트리 Full binary tree
-
-**이진 트리의 속성** (노드의 수 / 높이 등의 공식)
-
-**이진 트리 탐색**
-
-- 전위 순회
-- 중위 순회
-- 후위 순회
-
-**표현 방법**
-
-- 배열
-- 연결리스트 
-
-> 참고 사이트
->
-> https://monsieursongsong.tistory.com/6
->
-> https://gmlwjd9405.github.io/2018/08/12/data-structure-tree.html
->
-> [ Wiki](https://ko.wikipedia.org/wiki/이진_트리)
->
-> PPT 자료
-
-**과제**
-
-이진 트리에서 소멸과 관련된 함수를 작성해보자.
-
-------
-
-### 0204
+<img src="https://img.shields.io/badge/Update-20.02.04-blue" align = "left">
 
 ### 우선순위 큐(Priority Queue)와 힙(Heap)
 
@@ -100,9 +41,9 @@
 
 SimpleHeap 코드를 보면서 분석 하며 이해해보기.
 
-------
 
-### 0205
+
+<img src="https://img.shields.io/badge/Update-20.02.05-blue" align = "left">
 
 ### 힙(Heap)의 개선
 
@@ -182,7 +123,6 @@ int DataPriorityComp(char ch1, char ch2)
 PriorityComp형 함수의 경우에는  우선순위의 기준은 사용자의 편의에 따라 바꿔 만들 수 있다.
 
 ```c
-
 void HeapInit(Heap * ph)
 {
 	ph->numOfData = 0;
@@ -314,21 +254,11 @@ HData HDelete(Heap * ph)
 
 HInsert와 HDelete 의 함수도 살펴보면 comp에 등록된 함수의 호출결과를 통해서 우선순위를 판단하는 것을 볼 수 있다.
 
-### 입력 함수
 
-getline 함수 https://jhnyang.tistory.com/107
 
-fgets / gets 함수 
 
-https://8ublictip.tistory.com/7 
 
-> gets() 함수는 최근 표준에서 제외될 정도로 문제가 많은 함수 이므로 여러 단어를 입력 받을 대는 fgets() 혹은 이를 가공하여 쓰자
-
- [김성엽 블로그](https://m.blog.naver.com/PostView.nhn?blogId=tipsware&logNo=221326391483&proxyReferer=https%3A%2F%2Fwww.google.com%2F)
-
-------
-
-### 0206
+<img src="https://img.shields.io/badge/Update-20.02.06-blue" align = "left">
 
 ### 우선순위 큐 자료구조의 ADT
 
@@ -350,10 +280,3 @@ https://8ublictip.tistory.com/7
   - 본 함수의 호출을 위해서는 데이터가 하나 이상 존재함이 보장 되어야 한다.
     - 먼저 Empty로 확인 후 데이터를 삭제하는 것이 맞다.
 
-### 에러 
-
-"const char*" 형식의 값을 사용하여 "char *" 형식의 엔터티를 초기화할 수 없습니다. 라는 오류가 발생하는데 이때 해결 방법은 const를 붙이거나 속성에서 준수모드를 아니오로 변경해주는 방법이있다. c에서는 저런 오류가 안나지만 c++에서는 생긴다.
-
-https://shjz.tistory.com/49
-
-https://blog.naver.com/PostView.nhn?blogId=helicopter55&logNo=221519318260

@@ -1,4 +1,4 @@
-### 0128
+<img src="https://img.shields.io/badge/Update-20.01.28-blue" align = "left">
 
 ### 큐(Queue)
 
@@ -27,19 +27,19 @@ else
 
 >  참고 사이트 
 >
-> https://mailmail.tistory.com/33
+>  https://mailmail.tistory.com/33
 >
-> https://reakwon.tistory.com/30
+>  https://reakwon.tistory.com/30
 >
-> https://m.blog.naver.com/powhy123/22100929019
+>  https://m.blog.naver.com/powhy123/22100929019
 
 **과제**
 
 - 양방향 연결 리스트 (Double LinkedList)를 스택과 큐를 구현해보기
 
-------
 
-### 0130
+
+<img src="https://img.shields.io/badge/Update-20.01.30-blue" align = "left">
 
 ### 덱(DEQUE)
 
@@ -55,16 +55,3 @@ Double-Ended Queue의 줄임말
 
 - Deque을 이용해서 Queue를 만들어보자.
 
-------
-
-### 0131
-
-### 입출력 버퍼 참고
-
-https://dojang.io/mod/page/view.php?id=763 
-
-### scanf 정수 한자리씩 입력 받는 법
-
-숫자가 연속 되어 입력이 되었을때 `scanf("%1d",&변수);` 를 통해 하나씩 받을 수 있다.
-
-1은 다른 숫자가 들어갈 수 있다.
