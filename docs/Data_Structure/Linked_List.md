@@ -1,6 +1,4 @@
-<img src="https://img.shields.io/badge/Update-20.01.17-blue" align = "left">
-
-#### 추상 자료형
+## 추상 자료형
 
 - 추상 자료형은 프로그램의 대상이 되는 사물이나 현상을 추상화하여 정의한 것.
 - 사용자와 구현자의 분리
@@ -10,11 +8,7 @@
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.13-blue" align = "left">
-
-
-
-#### 단순 연결 리스트(Single Linked List)
+## 단순 연결 리스트(Single Linked List)
 
 - 단순 연결 리스트의 ADT : ArrayList를 구현과 차이는 없고 정렬 기능만 추가
 
@@ -42,11 +36,7 @@
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.14-blue" align = "left">
-
-
-
-#### Dummy Node _단순 연결 리스트(Single Linked List)
+### Dummy Node _단순 연결 리스트(Single Linked List)
 
 ```c++
 head = (Node*)malloc(sizeof(Node)); /*더미노드*/
@@ -71,11 +61,7 @@ tail = head;
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.15-blue" align = "left">
-
-
-
-#### 단순 연결 리스트 정렬 삽입
+### 단순 연결 리스트 정렬 삽입
 
 ```C++
 typedef struct_linkedList
@@ -102,11 +88,7 @@ typedef struct_linkedList
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.17-blue" align = "left">
-
-
-
-#### 원형 연결 리스트 (Circular linked list)
+## 원형 연결 리스트 (Circular linked list)
 
 Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 존재하게 된다면 tail이 마지막 지점이면서 tail->next가 시작점이 된다. 또한 Node를 추가 할 때 두 가지 방법이 있는데 머리에 추가하느냐(tail->next 부분이 된다) 꼬리에 추가 하느냐 tail이 추가한 Node가 된다. (tail의 위치가 달리지는 것) // 블로그 참고 
 
@@ -119,11 +101,7 @@ Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 �
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.20-blue" align = "left">
-
-
-
-#### 양방향 연결 리스트(Double LinkedList )
+## 양방향 연결 리스트(Double LinkedList )
 
 이중 연결 리스트라고 부르기도 하며 왼쪽 Node가 오른쪽 Node를 가리킴과 동시에 오른쪽 Node도 왼쪽 Node를 가리키는 구조이다. 왼쪽과 오른쪽 모두 가리키고 있기 때문에 단순 연결리스트에서 참조를 위해 사용했던 before 은 필요가 없다.
 
@@ -141,9 +119,7 @@ Last Node가 First Node를 가리키게 하는 리스트 . head 대신 tail만 �
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.21-blue" align = "left">
-
-#### Dummy Node_양방향 연결 리스트(Double LinkedList )
+### Dummy Node_양방향 연결 리스트(Double LinkedList )
 
 기존의 양방향 연결 리스트에서 더미노드 기반 연결 리스트를 구현할 때 코드를 추가/변경 해야하는 부분
 

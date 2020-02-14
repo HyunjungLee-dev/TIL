@@ -1,6 +1,4 @@
-<img src="https://img.shields.io/badge/Update-20.01.28-blue" align = "left">
-
-### 큐(Queue)
+## 큐(Queue)
 
 큐는 선입선출(FIFO : First In, First Out)로 먼저 들어온게 먼저 나가는 자료구조이다. 대기표 같은걸 예로 들 수 있는데 먼저 기다린 사람이 먼저 받는 것처럼 큐 또한 그렇다.
 
@@ -39,9 +37,7 @@ else
 
 
 
-<img src="https://img.shields.io/badge/Update-20.01.30-blue" align = "left">
-
-### 덱(DEQUE)
+## 덱(DEQUE)
 
 Double-Ended Queue의 줄임말
 

@@ -1,20 +1,18 @@
-<img src="https://img.shields.io/badge/Update-20.02.12-blue" align = "left">
+## 탐색의 이해와 보간 탐색
 
-### 탐색의 이해와 보간 탐색
-
-#### **탐색의 이해**
+### 탐색의 이해
 
 - 효율적인 탐색을 위해서 검색방법을 고민하는 것보다 **효율적으로 저장을 하면 탐색도 효율적이게 된다.**
 - 자료구조에서 탐색은 중요한 위치를 차지하고 있다.
 
-#### 순차 탐색 (Sequential Search)
+### 순차 탐색 (Sequential Search)
 
 - 배열의 처음부터 끝까지 차례대로 비교하여 원하는 데이터를 찾아낸다.
 - **단순하지만 비효율적**
 - 단방향으로 탐색을 수행하기 때문에 **선형 탐색(Linear Search)**라고 부르기도 한다.
 - 시간 복잡도 O(n)
 
-#### 이진 탐색  (Binary Search)
+### 이진 탐색  (Binary Search)
 
 - 순차 탐색 알고리즘보다 좋은 성능을 발휘한다.
 - **배열이 정렬이 되어 있어야한다.**
@@ -23,7 +21,7 @@
 - C++ STL에서 라이브러리로 제공
 - 시간 복잡도 O(log₂n)
 
-#### **보간 탐색** (Interpolation Search)
+### 보간 탐색 (Interpolation Search)
 
 - 이진 탐색과 비슷하지만 탐색 시작위치에서 차이가 있다.
   - 이진 탐색은 반으로 나누어 찾지만 보간 탐색의 경우 인덱스의 위치를 예측해서 그 부분 부터 탐색한다.
@@ -34,7 +32,7 @@
 - 사전과 전화번호부에 비교 할 수 있다.
   - 감자라는 단어를 사전에서 찾을 때 'ㄱ' 에서 찾아가는 것과 같은 것
 
-#### 이진 탐색 트리(Binary Search Tree)
+### 이진 탐색 트리(Binary Search Tree)
 
 이진 탐색이 적용된 이진 트리
 
@@ -63,9 +61,7 @@
 
 
 
-<img src="https://img.shields.io/badge/Update-20.02.13-blue" align = "left">
-
-### 이진 탐색 트리 삭제 알고리즘
+#### 이진 탐색 트리 삭제 알고리즘
 
 ```c
 BTreeNode * BSTRemove(BTreeNode ** pRoot, BSTData target)

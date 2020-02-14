@@ -1,6 +1,4 @@
-<img src="https://img.shields.io/badge/Update-20.02.10-blue" align = "left">
-
-#### 버블 정렬(Bubble Sort)
+## 버블 정렬(Bubble Sort)
 
 **버블 정렬의 개념**
 
@@ -28,7 +26,7 @@
 **정리**
 버블 정렬의 경우 O(n²)라는 시간복잡도로 굉장히 느린 편에 속하는 정렬 알고리즘이기에 비교할 데이터가 많을 수록 성능이 저하 되기 때문에 코드가 단순하여 구현하기 좋고 이해가 쉽다하여도 데이터의 개수가 적은 경우에   주로 사용한다.
 
-#### 선택정렬 (Selection Sort)
+## 선택정렬 (Selection Sort)
 
 **선택 정렬의 개념** 
 
@@ -55,7 +53,7 @@
 
 
 
-#### 삽입 정렬(Insertion Sort)
+## 삽입 정렬(Insertion Sort)
 
 **삽입 정렬의 개념** 
 
@@ -115,10 +113,6 @@
 
 
 
-<img src="https://img.shields.io/badge/Update-20.02.11-blue" align = "left">
-
-
-
 **안정 정렬(Stable Sort) **
 
 동일한 값에 대한 기존의 순서가 유지되는 정렬 방식
@@ -127,7 +121,9 @@
 
 동일한 값에 대해 기존의 순서가 뒤바뀔 수 있는 정렬 방식
 
-#### 힙 정렬(Heap Sort)
+
+
+## 힙 정렬(Heap Sort)
 
 **힙 정렬의 개념**
 
@@ -150,7 +146,9 @@ stable : no
 
 시작 복잡도가 좋은 편이며 전체 자료를 정렬하는 것이 아니라 가장 큰 값 몇개만 필요할 때 가장 유용하다.
 
-#### 병합 정렬(Merge Sort)
+
+
+## 병합 정렬(Merge Sort)
 
 **병합 정렬의 개념**
 
@@ -176,7 +174,9 @@ stable : no
 
  K = 𝐥𝐨𝐠𝟐 𝒏 ➔ O(𝐧𝒍𝒐𝒈𝟐 𝒏)
 
-#### 퀵 정렬(Quick Sort)
+
+
+## 퀵 정렬(Quick Sort)
 
 **퀵 정렬의 개념**
 

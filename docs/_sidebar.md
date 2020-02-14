@@ -1,6 +1,6 @@
 * **C**
-  * [문자와 문자열(String and character)](/C/String_and_character.md)
-  * [함수 포인터(Function pointer)](/C/Function_pointer.md)
+  * [String and character](/C/String_and_character.md)
+  * [Function pointer](/C/Function_pointer.md)
   * [Library function](/C/Library_function.md)
 * **Data Structure**
   - [Linked List](/Data_Structure/Linked_List.md)

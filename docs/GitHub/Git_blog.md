@@ -1,6 +1,4 @@
-<img src="https://img.shields.io/badge/Update-20.01.14-blue" align = "left">
-
-#### Gitblog post 오류 수정
+## Gitblog post 오류 수정
 
 오류 : 블로그에 글은 올라갔는데 타이틀과 태그, 카테고리 적용이 안됨
 
@@ -17,12 +15,6 @@ title: Blogging Like a Hacker
 - 시작과 끝을 대시문자 세 개로 감싸서 올바른 YAML 형식으로 작성해야한다.
 
 - [Jekyll frontmatter 설명](https://jekyllrb-ko.github.io/docs/frontmatter/)
-
-
-
-<img src="https://img.shields.io/badge/Update-20.01.18-blue" align = "left">
-
-
 
 - 링크가 안 걸리는 것
   - [] () 를 이용해서 다시 눌렀을 때 링크로 이동되도록 수정했다.

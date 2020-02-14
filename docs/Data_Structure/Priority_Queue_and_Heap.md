@@ -1,6 +1,4 @@
-<img src="https://img.shields.io/badge/Update-20.02.04-blue" align = "left">
-
-### 우선순위 큐(Priority Queue)와 힙(Heap)
+## 우선순위 큐(Priority Queue)와 힙(Heap)
 
 우선 순위 큐라는 것은 단순 큐의 확장 개념이 아니다. 큐의 경우 먼저 들어간게 먼저 나오는 FIFO(First In First Out)구조로 저장하는 형식이었다. 우선 순위 큐의 경우에는 각 원소들이 우선순위를 갖고 있으며 들어간 순서와 상관 없이 우선순위가 높은 데이터가 먼저 나오게 된다.  만약 두 원소가 같은 우선순위를 가진다면 큐에서 그들의 순서에 의해 처리된다.
 
@@ -42,8 +40,6 @@
 SimpleHeap 코드를 보면서 분석 하며 이해해보기.
 
 
-
-<img src="https://img.shields.io/badge/Update-20.02.05-blue" align = "left">
 
 ### 힙(Heap)의 개선
 
@@ -255,10 +251,6 @@ HData HDelete(Heap * ph)
 HInsert와 HDelete 의 함수도 살펴보면 comp에 등록된 함수의 호출결과를 통해서 우선순위를 판단하는 것을 볼 수 있다.
 
 
-
-
-
-<img src="https://img.shields.io/badge/Update-20.02.06-blue" align = "left">
 
 ### 우선순위 큐 자료구조의 ADT
 
