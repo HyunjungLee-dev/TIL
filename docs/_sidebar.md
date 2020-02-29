@@ -6,6 +6,7 @@
   * [STL](/C++/STL.md)
 * **Data Structure**
   * [Data Structure & algorithm](/Data_Structure/Data_Structure_algorithm.md)
+  * [Recursion](/Data_Structure/Recursion.md)
   * [Linked List](/Data_Structure/Linked_List.md)
   * [Stack](/Data_Structure/Stack.md)
   * [Queue](/Data_Structure/Queue.md)
