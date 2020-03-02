@@ -3,6 +3,9 @@
   * [Function pointer](/C/Function_pointer.md)
   * [Library function](/C/Library_function.md)
 * **C++**
+  * [Overloading](/C++/Overloading.md)
+  * [Function Object](/C++/Function_Object.md)
+  * [Template](/C++/template.md)
   * [STL](/C++/STL.md)
 * **Data Structure**
   * [Data Structure & algorithm](/Data_Structure/Data_Structure_algorithm.md)
@@ -20,4 +23,7 @@
 - **GitHub**
   - [Git blog](/GitHub/Git_blog.md)
   - [MarkDown](/GitHub/MarkDown.md)
+- **etc.**
+  - [Error](/etc/Error.md)
+  - [etc.](/etc/etc.md)
 

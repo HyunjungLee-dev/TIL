@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,6 +21,19 @@
             loadSidebar: true,
             search: 'auto',
             subMaxLevel: 5,
+            search: {
+                noData: {
+                '/de-de/': 'Keine Ergebnisse!',
+                '/zh-cn/': '没有结果!',
+                '/': 'No results!'
+                },
+                paths: 'auto',
+                placeholder: {
+                '/de-de/': 'Suche',
+                '/zh-cn/': '搜索',
+                '/': 'Search'
+                }
+            },
             themeable: {
                 readyTransition: true, // default
                 responsiveTables: true  // default
@@ -28,6 +41,7 @@
         }
     </script>
     <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+    <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
     <!-- docsify-themeable (latest v0.x.x) -->
     <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
 
