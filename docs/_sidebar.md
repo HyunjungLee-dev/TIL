@@ -39,6 +39,7 @@
 * **WinAPI**
 
   * [WinAPI](/WinAPI/WinAPI.md)
+  * [DC](/WinAPI/DC.md)
 
 - **GitHub**
   - [Git blog](/GitHub/Git_blog.md)
