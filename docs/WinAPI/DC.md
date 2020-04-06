@@ -207,7 +207,74 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 - 두 번째, 세 번째 인자 : x,y 좌표값
 - 네 번째 인자 : RGB(레드,그린,블루) - 0~255의 넘버
 
-![MoveToExLineTo](https://user-images.githubusercontent.com/54986748/78364806-0e925900-75f9-11ea-8a65-20ce8f25c25d.png)
+#### SetPixel()로 원 그리기
+
+```c++
+void MyCircle(HDC hdc, int x, int y, int r)  
+{
+	double pi = 3.141592;
+
+	for (int i = 0; i < 360; i++)
+	{
+		SetPixel(hdc, x + int(sin(i*pi / 180)*r), y + int(cos(i*pi / 180)*r), RGB(0, 255, 0));
+	}
+}
+
+void MyEllipse(HDC hdc, int x, int y, int rx, int ry) 
+{
+	double pi = 3.141592;
+
+	for (int i = 0; i < 360; i++)
+	{
+		SetPixel(hdc, x + int(sin(i*pi / 180)*rx), y + int(cos(i*pi / 180)*ry), RGB(255, 0, 0));
+	}
+}
+```
+
+여기서 봐야하는 부분은 x,y 좌표값이 들어가는 부분이다. 0도부터 360도까지 돌면서 각도 값을 라디안 값으로 변환 후 cos()과 sin() 함수에 넣어서 원을 그려주는 것이다.
+
+그렇다면 라디안(Radian)이란 무엇일까? 각도를 표현하는 단위로는 호도각(Degree)와 라디안(Radian)이 있다. 호도각은 각도를 0도에서 360도까지 표현하는 방법이고 라디안은 반지름이 1인 원에서 호의 길이가 1인 부채꼴의 각을 기본 단위로 삼아 원의 한 바퀴를 2π로 표현하는 방식의 각도 표현법이다. π는 180도를 의미한다. 즉 1도는 π /180 라디안과 같은 값이다.
+
+호도각을 라디안으로 변환 하려면 `radian = degree * Math.PI / 180`
+
+ex. 120° 를 라디안으로 변환 하려면
+
+ 	120 x π/180 
+
+​	 120 x π/180 = 120π/180 
+
+​	120 x π/180 = 120π/180 ÷ 60/60 = 2/3π radians
+
+​	120° = 2/3π radians
+
+​	[WikiHow 각로를 라디안 값으로 바꾸는 법](https://ko.wikihow.com/각도를-라디안-값으로-바꾸는-법)
+
+라디안을 호도각으로 변환 하려면 `degree = radian * 180 / Math.PI`
+
+그렇다면 삼각함수를 이용해 어떻게 원을 그릴 수있을까? 
+
+![Tf](https://user-images.githubusercontent.com/54986748/78503525-193c2200-77a2-11ea-9244-1dfcd9bfcfc6.png)
+
+반지름의 길이가 1인 원이 있을 때, 원을 구성하는 각각의 점들의 위치 값을 삼각함수를 이용하여 표현 할 수 있다.  `cos θ = x, sin θ = y` 라고 표현 할 수 있다. 즉 x는 cos θ , y는 sin θ로 θ에 0부터 360까지의 각도를 대입하면 단위 원이 그려지는 것이다.
+
+위의 코드의 경우
+
+![Tf2](https://user-images.githubusercontent.com/54986748/78504951-198ceb00-77ab-11ea-8175-eb4beb605d1e.png)
+
+참조 블로그 
+
+- https://bckong.tistory.com/32 [어느 게임 개발자의 일상]
+
+- [수학벙커](https://m.blog.naver.com/PostView.nhn?blogId=alwaysneoi&logNo=100190371892&proxyReferer=https%3A%2F%2Fwww.google.com%2F)
+- https://blog.naver.com/since860321/130166450214
+
+
+
+
+
+------
+
+![MoveToExLineTo](https://user-images.githubusercontent.com/54986748/78502054-fd348280-7799-11ea-9deb-6591eefdf4b7.png)
 
 ### MoveToEx()
 
@@ -222,6 +289,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 - 첫 번째 인자 : DC 핸들 값
 - 두 번째, 세 번째 인자 : x,y 좌표값
 
+------
+
 
 
 ![Rectangle](https://user-images.githubusercontent.com/54986748/78364832-1c47de80-75f9-11ea-8cea-62e611b114fb.png)
@@ -230,7 +299,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 - 사각형을 그리는 함수
 - 첫 번째 인자 : DC 핸들 값
-- 2,3,4,5번째 인자 : left, top, right, bottom
+- 2,3,4,5번째 인자 : left, top, right, bottom\
+
+------
 
 
 
