@@ -43,6 +43,8 @@
   * [KEYBOARD](/WinAPI/KEYBOARD.md)
   * [MOUSE](/WinAPI/MOUSE.md)
   * [MESSAGEBOX](/WinAPI/MESSAGEBOX.md)
+  * [MESSAGE](/WinAPI/MESSAGE.md)
+  * [TIMER](/WinAPI/TIMER.md)
 
 - **GitHub**
   - [Git blog](/GitHub/Git_blog.md)
