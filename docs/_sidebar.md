@@ -1,4 +1,9 @@
+* **Weekly**
+  
+  * [2020-07-28~](/weektil/2020-07-28~.md)
+  
 * **C**
+  
   * [String and character](/C/String_and_character.md)
   * [Function pointer](/C/Function_pointer.md)
   * [Library function](/C/Library_function.md)
