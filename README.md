@@ -1,6 +1,7 @@
 # Today I Learned
 
 <p><a href="https://hyunjung-til.netlify.com"><img src="https://img.shields.io/badge/Site-https%3A%2F%2Fhyunjung--til.netlify.com-blue" alt="TIL" /></a>
+
 배운 것과 공부한 것을 작성합니다.
 
 기록의 정제된 글은 블로그에 업로드합니다.
