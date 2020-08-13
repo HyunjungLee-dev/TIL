@@ -2,6 +2,10 @@
   
   * [2020-07-28~](weektil/2020-07-28~.md)
   
+* **Machine Learning**
+
+  * [Yahac](MachineLearning/Machinelearning_yah.md)
+
 * **C**
   
   * [String and character](C/String_and_character.md)
