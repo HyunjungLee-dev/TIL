@@ -112,3 +112,43 @@ accept 함수호출 이후에는 데이터의 송수신이 가능하다. 단, �
 
 ------
 
+### 윈도우에서 리눅스 개발 환경 설정(WSL 설치 및 VS Code 연동)
+
+#### 설치
+
+1. Windows 10 607 버전 이상이 필요하며 [제어판]->[프로그램]->프로그램 및 기능 아래에 Windows 기능 켜기/끄기] -> [Linux용 Windows 하위 시스템] 체크 또는 PowerShell을 관리자 권하느로 열고 아래의 명령을 실행한다. 후에 컴퓨터를 재시작 한다.
+
+```
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+```
+
+2. Microsoft Store에서 Ubuntu를 설치한다.
+   1.  terminal을 설치한다.(추가적)
+3. 설치가 완료 되면 실행을 한다. Ubuntu를 실행하거나 명령 프롬프트에서 wsl을 입력한다. 
+
+#### Visual Studio Code와 WSL 연동
+
+- WSL : 리눅스용 윈도우즈 서브 시스템
+
+1. Visual Studio Code를 windows에 설치한다.
+2. Visual Studio Code를 실행하여 Remote Development 확장 프로그램을 추가 설치한다.
+3. 윈도우 측의 Git에서 소스코드의 line ending을 윈도우즈 형식으로 변경하지 못하도록 설정한다. 윈도우 프롬프트에서 git config --global core.autocrlf input 명령을 입력한다.
+
+#### WSL의 폴더 열기
+
+WSL 내부의 폴더를 VSCode를 이용하여 여는 방법
+
+1. 시작 메뉴나 명령어 프롬프트에서 wsl을 입력해 WSL 터미널 창을 ㅇㄴ다.
+2. 터미널을 열고 열고자 하는 폴더로 이동하여 (cd ~ 명령어를 사용) code .를 입력한다.
+3. 진행이 완료된 후, VSCode 창이 나오며 하단에서 WSL 표시를 볼 수 있다.
+
+> 관련 블로그
+>
+> [YJcode](https://yjcode.tistory.com/1?category=811393)
+>
+> *위 블로그에서 키 설정 내용은 [dev_(by may)](https://blog.naver.com/PostView.nhn?blogId=rorean&logNo=221346968488&parentCategoryNo=&categoryNo=8&viewDate=&isShowPopularPosts=true&from=search) 확인
+>
+> [학습기록 (by 쓴웃음)](https://rottk.tistory.com/entry/%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EA%B0%9C%EB%B0%9C%EC%9D%84-%EC%9C%84%ED%95%9C-WSL-%EC%84%A4%EC%B9%98-%EB%B0%8F-VS-Code-%EC%97%B0%EB%8F%99)
+>
+> [sxin2949.lg (by sxin2949)](https://velog.io/@sxin2949/%EC%9C%88%EB%8F%84%EC%9A%B0%EC%97%90%EC%84%9C-%EB%A6%AC%EB%88%85%EC%8A%A4-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0)
+
