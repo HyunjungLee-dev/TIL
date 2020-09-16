@@ -23,6 +23,10 @@
 
 전력망으로부터 전기를 공급받기 위해 소켓을 꽂는 것과 마찬가지로 컴퓨터와 데이터를 송수신하려면 인터넷이라는 네트워크 망을 연결해야 하는데 이때 프로그래밍에서 '소켓'은 네트워크 망의 연결에 사용되는 도구이다. 즉, 연결이라는 의미가 담겨있어서 '소켓'이라는 표현을 사용한다.
 
+------
+
+
+
 ### 전화 받는 소켓의 생성
 
 #### 소켓의 비유와 분류
@@ -152,3 +156,399 @@ WSL 내부의 폴더를 VSCode를 이용하여 여는 방법
 >
 > [sxin2949.lg (by sxin2949)](https://velog.io/@sxin2949/%EC%9C%88%EB%8F%84%EC%9A%B0%EC%97%90%EC%84%9C-%EB%A6%AC%EB%88%85%EC%8A%A4-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0)
 
+------
+
+### 전화 거는 소켓의 구현
+
+#### 연결을 요청하는 소켓의 구현
+
+- 전화를 거는 상황에 비유할 수 있다.
+- 리스닝 소켓과 달리 구현의 과정이 매우 간단하다.
+  - 걸려오는 전화를 받는 역할, 리스닝 소켓(=서버 소켓)
+- '소켓의 생성'과 '연결의 요청'으로 구분된다.
+
+**[연결의 요청]**
+
+```c
+#include <sys/soket.h>
+int connect(int sockfd, struct sockaddr *serv_addr, socklen_t addrlen);
+// 성공 시 0, 실패 시 -1 반환
+```
+
+#### 예제 hello_client.c를 통해서 함수의 호출과정 확인하기
+
+- 함수의 호출과 데이터가 실제 송수신 됨을 확인하자.
+- 소스코드의 이해는 점진적으로
+
+ 
+
+------
+
+## Chapter 01-2. 리눅스 기반 파일 조작하기
+
+### 저 수준 파일 입출력과 디스크립터
+
+#### 저 수준 파일 입출력
+
+- ANSI의 표준함수가 아닌, **운영체제가 제공하는** 함수 기반의 파일 입출력.
+- 표준이 아니기 때문에 운영체제에 대한 호환성이 없다.
+- **리눅스는 소켓도 파일**로 간주하기 때문에 저 수준 파일 입출력 함수를 기반으로 소켓 기반의 데이터 송수신이 가능하다.
+  -  리눅스가 파일을 처리하는 방법(기준)이 있는데 그 기준에 동일하게 소켓을 처리하기 때문에 파일을 처리하기 위해서 제공한  파일 입출력 함수를 그대로 소켓에 적용해서 데이터를 주고 받는데 사용할 수 있다.
+
+| 파일 디스크립터 |           대 상            |
+| :-------------: | :------------------------: |
+|        0        | 표준입력 : Standard Input  |
+|        1        | 표준출력 : Standard Output |
+|        2        | 표준에러 : Standard Error  |
+
+#### 파일 디스크립터
+
+- 운영체제가 만든 파일(그리고 소켓)을 구분하기 위한 일종의 숫자
+- 저 수준 파일 입출력을 목적으로 파일 디스크립터를 요구한다.
+- 저 수준 파일 입출력 함수에게 소켓의 파일 디스크립터를 전달하면, 소켓을 대상으로 입출력을 진행한다.
+
+------
+
+### 파일 열기와 닫기 
+
+```c
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcnt1. h>
+
+int open(const char *path, int flag);
+// 성공 시 파일 디스크립터, 실패 시 -1 반환
+```
+
+- path : 파일 이름을 나타내는 문자열의 주소 값 전달
+- flag : 파일의 오픈모드 정보 전달
+
+두 번째 매개변수 flag에 전달할 수 있는 값과 의미는 다음과 같으며, 하나 이상의 정보를 비트 OR 연산자로 묶어서 전달이 가능하다.
+
+**[파일의 오픈 모드]**
+
+| 오픈 모드 | 의 미                                  |
+| :-------: | -------------------------------------- |
+|  O_CREAT  | 필요하면 파일을 생성                   |
+|  O_TRUNC  | 기존 데이터 전부 삭제                  |
+| O_APPEND  | 기존 데이터 보존하고, 뒤에 이어서 저장 |
+| O_RDONLY  | 읽기 전용으로 파일 오픈                |
+| O_WRONLY  | 쓰기 전용으로 파일 오픔                |
+|  O_RDWR   | 읽기, 쓰기 겸용으로 파일 오픈          |
+
+open 함수 호출 시 반환된 파일 디스크립터를 이용해서 파일 입출력을 진행하게 된다.
+
+```c
+#include <unistd.h>
+
+int close(int fd);
+//성공시 0, 실패시 -1 반환
+```
+
+- fd : 닫고자 하는 파일 또는 소켓의 파일 디스크립터 전달.
+
+위 함수는 파일뿐만 아니라, 소켓을 닫을 때에도 사용된다. 이는 파일과 소켓을 구분하지 않는다는 리눅스 운영체제의 특성 때문이다.
+
+------
+
+### 파일에 데이터 쓰기
+
+```c
+#include <unistd.h>
+
+ssize_t write(int fd, const void * buf, size_t nbytes);
+// 성공 시 전달한 바이트 수, 실패 시 -1 반환
+```
+
+- fd : 데이터 전송대상을나타내는 파일 디스크립터 전달
+
+- buf : 전송할 데이터가 저장된 버퍼의 주소 값 전달.
+- nbytes : 전송할 데이터의 바이트 수 전달.
+
+```c
+int main(void)
+{
+	int fd;
+	char buf[]="Let's go!\n";
+	fd=open("data.text", O_CREAT|O_WRONLY|O_TRUNC);
+	if(fd==-1)
+		error_handling("open() error!");
+	printf("flie descriptor : %d \n",fd);
+	
+	if(write(fd,buf,sizeof(buf))==-1)
+		error_handling("write() error!");
+	close(fd);
+	return 0;
+}
+```
+
+```c
+root@my_linux:/tcpip# gcc low_open.c -o lopen
+root@my_linux:/tcpip# ./lopen
+file descriptor : 3
+root@my_linux:/tcpip# cat data.txt
+Let's go!
+root@my_linux:/tcpip#
+```
+
+------
+
+### 파일에 저장된 데이터 읽기
+
+```c
+#include <unistd.h>
+
+ssize_t read(int fd, void *buf, size_t nbyes);
+//성공 시 수신한 바이트 수(단 파일의 끝을 만나면 0), 실패 시 -1 반환
+```
+
+- fd : 데이터 수신대상을 나타내는 파일 디스크립터 전달
+- buf : 수신한 데이터를 저장할 버퍼의 주소 값 전달
+- nbytes : 수신할 최대 바이트 수 전달.
+
+```c
+int main(void)
+{
+    int fd;
+    char buf[BUF_SIZE];
+    
+    fd=open("data.txt",O_RDONLY);
+    if(fd == -1)
+        error handling("open() error!");
+    printf("file descriptor : %d \n", fd);
+    
+    if(read(fd, buf, sizeof(buf))== -1)
+        error_handling("read() error!");
+    printf("file data: %s", buf);
+    close(fd);
+    return 0;
+}
+```
+
+```
+root@my_linux:/tcpip# gcc low_read.c -o lread
+root@my_linux:/tcpop# ./lread
+file descriptor : 3
+file data : : Let's go!
+root@my_linux:/tcpip#
+```
+
+------
+
+### 파일 디스크립터와 소켓
+
+```c
+int main(void)
+{
+	int fd1, fd2, fd3;
+	fd1=socket(PF_INET, SOCK_STREAM, 0);
+	fd2=open("test.dat", O_CREAT|O_WRONLY|O_TRUNC);
+	fd3=socket(PF_INET, SOCK_DGRAM,0);
+	
+	printf("flie descriptor 1: %d\n", fd1);
+	printf("flie descriptor 2: %d\n", fd2);
+	printf("flie descriptor 3: %d\n", fd3);
+	close(fd1); close(fd2); close(fd3);
+	return 0;
+}
+```
+
+```
+root@my_linux:/tcpip# gcc fd_seri.c -o fds
+root@my_linux:/tcpip# ./fds
+flie descriptor 1: 3
+flie descriptor 2: 4
+flie descriptor 3: 5
+root@my_linux:/tcpip#
+```
+
+실행결과를 통해서 소켓과 파일에 일련의 파일 디스크립터 정수 값이 할당됨을 알 수 있다. 그리고 이를 통해서 리눅스는 파일과 소켓을 동일하게 간주함을 확인할 수 있다. 3부터 시작하는 이유는 0 1 2는 표준 입력,출력,에러에 이미 할당 되어 있기 때문이다.
+
+------
+
+## Chapter 01-3. 윈도우 기반으로 구현하기
+
+### 윈도우 소켓을 위한 헤더와 라이브러리의 설정
+
+#### 윈속 기반의 프로그램 구현을 위한 두 가지 설정
+
+- 헤더 파일 winsock2.h의 포함
+- ws2_32.lib 라이브러리의 링크
+  - 추가 방법 :프로젝트 속성 (단축키 alt + F7 )->구성속성->링커->입력->추가->종속성
+
+ 
+
+------
+
+### 윈속의 초기화
+
+**[윈속 초기화 함수]**
+
+```c
+#include <winsock2.h>
+
+int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
+// 성공 시 0, 실패 시 0이 아닌 에러코드 값 반환
+```
+
+- wVersionRequested : 프로그래머가 사용할 윈속의 버전정보 전달
+  - MAKEWORD라는 매크로 함수를 이용
+- lpWSAData : WSADATA라는 구조체 변수의  주소 값 전달.
+
+**[코드상에서의 초기화 방법]**
+
+```c
+int main(int argc, char* argv[])
+{
+    WSADATA wsaData;
+    . . . .
+    if(WSAStartup(MAKEWORD(2,2),&wsaData)!= 0)
+        ErrorHandling("WSAStartup() error!");
+    . . . .
+    return 0;
+}
+```
+
+윈속의 초기화란, 윈속 함수호출을 위한 라이브러리의 메모리 LOAD를 의미한다.
+
+------
+
+### 윈속 라이브러리의 해제
+
+다음 함수가 호출되면 할당된 윈속 라이브러리는 윈도우 운영체제에 반환이 되면서, 윈속 관련 함수의 호출이 불가능해지므로, 프로그램이 종료되기 직전에 호출하는 것이 일반적이다.
+
+**[윈속 라이브러리를 해제시키는 함수]**
+
+```C
+#include <winsock2.h>
+
+int WSACleanup(void);
+// 성공 시 0, 실패 시 SOCKET_ERROR 반환
+```
+
+------
+
+### Chapter 01-4. 윈도우 기반의 소켓관련 함수와 예제
+
+#### 윈도우 기반 소켓관련 함수들 ONE
+
+**[리눅스의 socket 함수에 대응]**
+
+```c
+#include <winsock2.h>
+
+SOCKET socket(int af, int type, int protocol);
+//성공 시 소켓 핸들, 실패 INVALID_SOCKET 반환
+```
+
+**[리눅스의 bind 함수에대응]**
+
+```c
+#include <winsock2.h>
+
+int bind(SOCKET s, const struct sockaddr * name, int namelen);
+//성공 시 소켓 핸들, 실패 시 INVALID_SOCKET 반환
+```
+
+리눅스에서의 파일 디스크립터에 해당하는 것을 윈도우에서는 **핸들(HANDLE)**이라 한다.
+
+**[리눅스 listen 함수에 대응]**
+
+```c
+#include <winsock2.h>
+
+int listen(SOCKET s, int backlog);
+//성공 시 0, 실패 시 SOCKET_ERROR 반환
+```
+
+**[리눅스의 accept 함수에 대응]**
+
+```c
+#include <winsock2.h>
+
+SOCKET accept(SOCKET s, struct sockaddr * addr, int * addrlen);
+//성공 시 소케 핸들, 실패 시 INVALID_SOCKET 반환
+```
+
+**[리눅스의 connect 함수에 대응]**
+
+```c
+#include<winsock2.h>
+
+int connect(SOCKET s, const struct sockaddr * name, int namelen);
+// 성공 시 0, 실패 시 SOCKET_ERROR 반환
+```
+
+**[리눅스의 close 함수에 대응]**
+
+```c
+#include <winsock2.h>
+
+int closesocket(SOCKET s);
+// 성공 시 0, 실패 시 SOCKET_ERROR 반환
+```
+
+리눅스 같은 경우에는 소켓을 파일로 간주하기 때문에 파일 close 하는 함수를 그대로 사용해서 소켓을 종료한다. 그런데 윈도우의 경우는 
+
+소켓과 파일을 구분한다. 그 두 개를 동일시하지 않도록 운영체제가 디자인 되어있다. 그렇기에 별도의 소켓 종료 함수를 제공한다. 
+
+------
+
+### 윈도우 기반 서버, 클라이언트 예제 실행하기
+
+#### 예제 hello_server_win.c, hello_client_win.c의 실행
+
+**[실행결과 : hello_server_win.c]**
+
+```
+c:\tcpip\hServerwin 9190
+```
+
+**[실행결과 : hello_client_win.c]**
+
+```
+c:\tcpip>hClientWin 127.0.01 9190
+Message fron server : Hello World!
+```
+
+소스코드를 통해서 다음 두 가지 사실을 관찰하자.
+
+1. 소켓의 생성과정에 따른 함수의 호출
+2. 리눅스 기반에서 호출했던 소켓 기반 입출력 함수에 어떠한 차이가 있는가?
+
+------
+
+### 윈도우 기반 입출력 함수
+
+#### 윈도우에서는 별도의 입출력 함수를 사용
+
+- 리눅스와 달리 파일과 소켓을 별도의 리소스로 구분한다.
+- 때문에 파일 입출력 함수와 소켓 기반의 입출력 함수에 차이가 있다.
+
+
+
+```c
+#include <winsocket2.h>
+
+int send(SOCKET s, const char * buf, int len, int flags);
+//성공 시 전송된 바이트 수 , 실패 시 SOCKET_ERROR 반환
+```
+
+- s : 데이터 전송 대상과의 연결을 의미하는 소켓의 핸들 값 전달
+- buf : 전송할 데이터를 저장하고 있는 버퍼의 주소 값 전달
+- len : 전송할 바이트 수 전달
+- flags : 데이터 전송시 적용할 다양한 옵션 정보 전달.
+
+
+
+```c
+#include <winsock2.h>
+
+int recv(SOCKET s, const char * buf, int len, int flags);
+// 성공 시 수신한 바이트 수 (단 EOF 전송 시 0), 실패 시 SOCKET_ERROR 반환
+```
+
+- s : 데이터 수신 대상과의 연결을 의미하는 소켓의 핸들 값 전달
+- buf : 수신된 데이터를 저장할 버퍼의 주소 값 전달.
+- len : 수신할 수 있는 최대 바이트 수 전달
+- flags : 데이터 수신 시 적용할 다양한 옵션 정보 전달
