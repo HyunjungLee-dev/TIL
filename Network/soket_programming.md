@@ -705,3 +705,32 @@ Message from server : Hello World!
 Function read call count: 13
 ```
 
+------
+
+### 02-2. 윈도우 기반에서 이해 및 확인하기
+
+#### 윈도우 운영체제의 socket 함수
+
+```c
+#include <winsock2.h>
+
+SOCKET socket(int af, int type, int protocol);
+//성공 시 소켓 핸들, 실패 시 INVALID_SOCKET 반환
+```
+
+**[윈도우 소켓 생성의 예]**
+
+```c
+SOCKET soc=socket(PF_INET, SOCK_STREAM, IPROTO_TCP);
+if(soc==INVALID_SOCKET)
+	ErrorHandling(". . . ");
+```
+
+반환형이 SOCKET인, 이는 정수로 표현되는 소켓의 핸드 값을 저장하기 위해 정의된 자료형의 이름이다. 
+
+오류발생시 반환하는 INVALID_SOCKET도 오류발생을 알리는 하나의 상수이다. 이 값은 -1이지만 if(soc == -1) 과 같이 작성하게 되면 위와 같은 상수를 정의한 의미가 없어지고 MS에서 향후에 INVALID_SOCKET의 값을 변경해도 문제가 발생하지 않는다.
+
+프로토콜은 표준이다. 따라서 소켓의 타입에 따른 데이터의 전송특성은 운영체제와 상관없이 동일하다.
+
+------
+
