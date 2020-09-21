@@ -882,3 +882,93 @@ struct sockaddr
 ```
 
 구조체 sockaddr은 다양한 주소체계의 주소정보를 담을 수 있도록 정의되었다. 그래서 IPv4의 주소정보를 담기가 불편하다. 이에 동한 바이트 열을 구성하는 구조체 sockaddr_in이 정의되었으며, 이를 이용해서 쉽게 IPv4의 주소정보를 담을 수 있다.
+
+------
+
+### 03-3 네트워크 바이트 순서와 인터넷 주소 변환
+
+#### CPU에 따라 달라지는 정수의 표현
+
+![image](https://user-images.githubusercontent.com/54986748/93746161-a3345600-fc2f-11ea-9cf8-ac38a2422f58.png)
+
+CPU에 따라서 상위 바이트를 하위 메모리 주세요 저장하기도 하고, 상위 바이트를 상위 메모리 주소에 저장하기도 한다. 즉, CPU마다 데이터를 표현 및 해석하는 방식이 다르다.
+
+------
+
+#### 바이트 순서(Order)와 네트워크 바이트 순서
+
+##### 빅 엔디안(Big Endian)
+
+- 상위 바이트의 값을 작은 번지수에 저장
+
+##### 리틀 엔디안(Little Endian)
+
+- 상위 바이트의 값을 큰 번지수에 저장
+
+##### 호스트 바이트 순서
+
+- CPU별 데이터 저장방식을 의미함
+
+##### 네트워크 바이트 순서
+
+- 통일된 데이터 송수신 기준을 의미함
+- 빅 엔디안이 기준이다.
+
+![캡처](https://user-images.githubusercontent.com/54986748/93746466-1b9b1700-fc30-11ea-85b1-c2ffd265ee8e.PNG)
+
+------
+
+#### 바이트 순서의 변환
+
+**[바이트 변환 함수]**
+
+```
+unsigned short htons(unsigned short);
+unsigned short ntohs(unsigned short);
+unsigned long htonl(unsigned long);
+unsigned long ntohl(unsigned long);
+```
+
+아래의 기준을 적용하면 위 함수가 의미하는 바를 이해할 수 있다.
+
+- htons에서 h는 호스트(host) 바이트 순서를 의미
+- htons에서 n은 네트워크(network) 바이트 순서를 의미
+- htons에서 s는 자료형 short를 의미
+- htonl에서 l은 자료형 long을 의미
+
+------
+
+#### 바이트 변환의 예
+
+```c
+int main(int argc, char *argv[])
+{
+	unsigned short host_port=0x1234;
+	unsigned short net_port;
+	unsigned long host_addr=0x12345678;
+	unsigned long net_addr;
+	
+	net_port=htons(host_port);
+	net_addr=htonl(host_addr);
+	
+	printf("Host ordered port: %#x \n", host_port);
+	printf("Network ordered port: %#x \n", net_port);
+	printf("Host ordered address: %x#lx \n", host_addr);
+	printf("Network ordered address: %#lx \n", net_addr);
+	return 0;
+}
+```
+
+**[실행 결과]**
+
+```
+root@my_linux:/tcpip# gcc endian_conv.c -o conv
+root@my_linux:/tcpip# ./conv
+Host ordered port: 0x1234
+Network ordered port: 0x3412
+Host ordered address: 0x12345678
+Network ordered address: 0x78563412
+```
+
+------
+
