@@ -893,6 +893,10 @@ struct sockaddr
 
 CPU에 따라서 상위 바이트를 하위 메모리 주세요 저장하기도 하고, 상위 바이트를 상위 메모리 주소에 저장하기도 한다. 즉, CPU마다 데이터를 표현 및 해석하는 방식이 다르다.
 
+> 참고
+>
+> [비트와 바트](https://1924.tistory.com/11)
+
 ------
 
 #### 바이트 순서(Order)와 네트워크 바이트 순서
@@ -907,6 +911,8 @@ CPU에 따라서 상위 바이트를 하위 메모리 주세요 저장하기도 
 
 ##### 호스트 바이트 순서
 
+- 빅엔디안,리틀엔디안의 총칭
+
 - CPU별 데이터 저장방식을 의미함
 
 ##### 네트워크 바이트 순서
@@ -920,13 +926,17 @@ CPU에 따라서 상위 바이트를 하위 메모리 주세요 저장하기도 
 
 #### 바이트 순서의 변환
 
+데이터를 송수신하기 위한 함수를 호출할때 바이트 순서를 바꾸는 코드는 없었는데 데이터의 순서를 바꿔서 전송해주기 때문에 신경을 안써도 되지만 즉, 데이터의 송수신에서의 엔디안 변환은 직접적으로 이루어지지만 소켓을 생성하는데에 있어서는 데이터 전송하는 것, 소켓 생성에 필요한 데이터를 마련을 해야하는데( 주소정보나 포트정보와 같은 것들) 그런 것들은 명시적으로 바꿔줘야한다.
+
+정리하면 소켓 생성된 다음부터 소켓을 이용한 엔디안 변환은 자동 하지만 소켓을 생성할때의 필요한 데이터는 명시적으로 바꿔줘야한다.
+
 **[바이트 변환 함수]**
 
 ```
 unsigned short htons(unsigned short);
-unsigned short ntohs(unsigned short);
+unsigned short ntohs(unsigned short); //short는 2바이트 PORT를 네트워크 바이트로 바꿀때 유용하게 사용
 unsigned long htonl(unsigned long);
-unsigned long ntohl(unsigned long);
+unsigned long ntohl(unsigned long);//long은 IP 정보를 바꿀때 유용하게 사용
 ```
 
 아래의 기준을 적용하면 위 함수가 의미하는 바를 이해할 수 있다.
@@ -943,9 +953,9 @@ unsigned long ntohl(unsigned long);
 ```c
 int main(int argc, char *argv[])
 {
-	unsigned short host_port=0x1234;
+	unsigned short host_port=0x1234;//16비트
 	unsigned short net_port;
-	unsigned long host_addr=0x12345678;
+	unsigned long host_addr=0x12345678;//32비
 	unsigned long net_addr;
 	
 	net_port=htons(host_port);
@@ -968,6 +978,87 @@ Host ordered port: 0x1234
 Network ordered port: 0x3412
 Host ordered address: 0x12345678
 Network ordered address: 0x78563412
+```
+
+------
+
+### 03-4. 인터넷 주소의 초기화와 할당
+
+#### 문자열 정보를 네트워크 바이트 순서의 정수로 변환
+
+```c
+#include <arpa/inet.h>
+in_addr_t inet_addr(const char * string);
+//성공 시 빅엔디안으로 변환된 32비트 정수 값, 실패 시 INADDR_NONE 반환
+```
+
+"211.214.107.99"와 같이 점이찍힌 10진수로 표현된 문자열을 전달하면, 해당 문자열 정보를 참조해서 IP주소정보를 32비트 정수형으로 반환!
+
+```c
+int main(int argc, char* argv[])
+{
+	char *addr1="1.2.3.4";
+    char *addr2="1.2.3.256";
+    unsigned long conv_addr=inet_addr(addr1);
+    if(conv_addr==INADDR_NONE)
+        printf("Error occured! \n");
+    else
+        printf("Network ordered integer addr : %lx \n",conv_addr);
+    conv_addr=inet_addr(addr2);
+    if(conv_addr==INADDR_NONE)
+        printf("Error ocureded \n");
+    else
+        printf("Network ordered integer addr: %lx \n\n", conv_addr);
+    return 0;
+}
+```
+
+**[실행결과]**
+
+```
+root@my_linux:/tcpip# gcc inet_addr.c -o addr
+root@my_linux:/tcpip# ./addr
+Network ordered integer addr: 0x4030201
+Error ocureded
+```
+
+------
+
+#### inet_aton
+
+```c
+#include<arpa/inet.h>
+
+int inet_aton(const char *string, struct in_addr* addr);
+//성공 시 1(true), 실패시 0(false) 반환
+```
+
+- string : 변환할 IP주소 정보를 담고 있는 문자열의 주소 값 전달
+- addr : 변환된 정보를 저장할 in_addr 구조체 변수의 주소 값 전달.
+
+기능상으로 inet_addr 함수와 동일하다. 다만 in_addr형 구조체 변수에 변환의 결과가 저장 된다는 점에서 차이를 보인다.
+
+```c
+int main(int argc, char *argv[]
+{
+	char* addr="127.232.124.79";
+    struct sockaddr_in addr_inet;
+    
+    if(!inet_aton(addr, &addr_inet.sin_addr))
+        error_handling("Conversion error");
+    else
+        printf("Network ordered integer integer addr : %#x \n"
+              , addr_inet.sin_addr.s_addr);
+    return 0;
+}
+```
+
+**[실행결과]**
+
+```
+root@my_linux:/tcpip# gcc inet_aton.c -o aton
+root@my_linux:/tcpip# ./aton
+Network ordered integer addr : 0x4f7ce87f
 ```
 
 ------
