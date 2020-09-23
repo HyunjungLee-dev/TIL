@@ -986,6 +986,10 @@ Network ordered address: 0x78563412
 
 #### 문자열 정보를 네트워크 바이트 순서의 정수로 변환
 
+sockaddr_in 안에서 주소정보를 저장하기 위해 선언된 멤버는 32형 정보형으로 정의되어 있다. IP주소 정보의 할당을 위해서는 32비트 정수형태로 IP주소를 표현할 수 있어야하는데 "211.214.107.99"와 같이 '점이 찍힌 십진수 표현방식(Dotted-Decimal Notation)'에는 익숙하지만 하나의 정수로 표현하는 데는 익숙지 않다. 
+
+그래서 문자열로 표현된 IP주소를 32바이트 정수형으로 반환해주는 함수가 있다. 뿐만아니라 변환과정에서 네트워크 바이트 순서로의 변환도 동시에 진행한다.
+
 ```c
 #include <arpa/inet.h>
 in_addr_t inet_addr(const char * string);
@@ -998,13 +1002,13 @@ in_addr_t inet_addr(const char * string);
 int main(int argc, char* argv[])
 {
 	char *addr1="1.2.3.4";
-    char *addr2="1.2.3.256";
-    unsigned long conv_addr=inet_addr(addr1);
+    char *addr2="1.2.3.256"; //1바이트당 표현할 수 있는 최대 크기의 정수는 255이므로 잘못된IP주소, inet_addr 함수의 오류 검출 능력을 확인하기 위함.
+    unsigned long conv_addr=inet_addr(addr1); // 정상적인 결과
     if(conv_addr==INADDR_NONE)
         printf("Error occured! \n");
     else
         printf("Network ordered integer addr : %lx \n",conv_addr);
-    conv_addr=inet_addr(addr2);
+    conv_addr=inet_addr(addr2);//정상적인 결과로 이어지지 안음
     if(conv_addr==INADDR_NONE)
         printf("Error ocureded \n");
     else
@@ -1022,6 +1026,8 @@ Network ordered integer addr: 0x4030201
 Error ocureded
 ```
 
+inet_addr 함수는 32비트 정수형태로 IP주소를 변환 할 뿐만 아니라, 유효하지 못한 IP주소에 대한 오류검출 능력도 갖고 있다.
+
 ------
 
 #### inet_aton
@@ -1036,7 +1042,9 @@ int inet_aton(const char *string, struct in_addr* addr);
 - string : 변환할 IP주소 정보를 담고 있는 문자열의 주소 값 전달
 - addr : 변환된 정보를 저장할 in_addr 구조체 변수의 주소 값 전달.
 
-기능상으로 inet_addr 함수와 동일하다. 다만 in_addr형 구조체 변수에 변환의 결과가 저장 된다는 점에서 차이를 보인다.
+기능상으로 inet_addr 함수와 동일하다. 즉, 문자열 형태의 IP주소를 31비트 정수, 그것도 네트워크 바이트 순서로 정렬해서 반환한다. 다만 in_addr형 구조체 변수에 변환의 결과가 저장 된다는 점에서 차이를 보인다. 홯용도는 inet_aton 함수가 더 높다.
+
+inet_addr 함수를 사용할 경우, 변환된 IP주소 정보를 구조체 sockaddr_in에 선언되어 있는 in_addr 구조체 변수에 대입하는 과정을 거쳐야하지만 inet_aton은 인자로 in_addr 구조체 변수의 주소 값을 전달하면 변환된 값이 자동으로 in_addr 구조체 변수에 저장되기 때문에 별도의 대입과정을 거칠 필요가 없다.
 
 ```c
 int main(int argc, char *argv[]
@@ -1059,6 +1067,340 @@ int main(int argc, char *argv[]
 root@my_linux:/tcpip# gcc inet_aton.c -o aton
 root@my_linux:/tcpip# ./aton
 Network ordered integer addr : 0x4f7ce87f
+```
+
+------
+
+#### inet_ntoa
+
+```c
+#include <arpa/inet.h>
+
+char* inet_ntoa(struct in_addr adr);
+//성공 시 변환된 문자열의 주소 값, 실패 시 -1 반환
+```
+
+inet_aton 함수의 반대기능 제공, 네트워크 바이트 순서로 정렬된 정수형 IP 주소정보를 우리가 눈으로 쉽게 인식할 수 있는 문자열(char형 포인터)의 형태로 변환
+
+함수 내부적으로 메모리공간을 할당해서 변환된 문자열 정보를 저장한다. inet_ntoa 함수가 재호출되기 전까지만 반환된 문자열의 주소 값이 유효하니(호출되면 전에 저장된 문자열 정보가 지워질 수 있다),오랫동안 문자열 정보를 유지해야 한다면 별도의 메모리 공간에 복사를 해둬야 한다. 
+
+```c
+struct sockaddr_in addr1, addr2;
+char *str_ptr;
+char str_arr[20];
+
+addr1.sin.addr.s_addr=htonl(0x1020304);
+addr2.sin_addr.s_addr=htol(0x1010101);
+
+str_ptr-inet_ntoa(addr1.sin_addr);
+strcpy(str_arr,str_ptr);
+printf("Dotted-Decimal notation1: %s \n", str_ptr);
+
+inet_ntoa(addr.sin_addr);
+printf("Dotted-Decimal notation2: %s \n", str_ptr);
+printf("Dotted-Decimal notation3: %s \n", str_arr);
+return 0;
+```
+
+**[실행결과]**
+
+```
+root@my_linux:/tcpip# gcc inet_ntoa.c -o ntoa
+root@my_linux:/tcpip# ./ntoa
+Dotted-Decimal notation1: 1.2.3.4
+Dotted_Decimal notation2: 1.1.1.1
+Dotted-Decimal notation3: 1.2.3.4
+```
+
+------
+
+#### 인터넷 주소의 초기화
+
+**[일반적인 인터넷 주소의 초기화 과정]**
+
+```c
+struct sockaddr_in addr;
+char *serv_ip="211.217.168.13"; //IP주소 문자열 선언
+char *serv_port="9190";//PORT번호 문자열 선언
+memset(&addr, 0, sizeof(addr)); //구조체 변수 addr의 모든 멤버 0으로 초기화
+//0으로 초기화해야하는 sockaddr_in 구조체 멤버 sin_zero를 0으로 초기화 하기 위함
+addr.sin_family=AF_INET; // 주소체계 지경
+addr.sin_addr.s_addr=inet_addr(serv_ip); //문자열 기반의 IP주소 초기화
+addr.sin_port=htos(atoi(serv_port)); //문자열 기반의 PORT번호 초기화
+//atoi 함수는 문자열로 표현되어 있는 값을 정수로 변환해서 반환한다.
+```
+
+#### 클라이언트의 주소정보 초기화
+
+서버에서 주소정보를 설정하는 이유
+
+- IP 211.217.168.13, PORT 9190으로 들어오는 데이터는 내게로 다 보내라
+- bind 함수를 통해서 이뤄진다.
+- 서버 프로그램에서는 sockaddr_in 구조체 변수를 하나 선언해서, 이를 서버 소켓이 동작하는 컴퓨터의 IP와 소켓에 부여할 PORT번호로 초기화한 다음에 bind 함수를 호출한다.
+
+클라이언트에서 주소정보를 설정하는 이유
+
+- IP 211.217.168.13, PORT 9190으로 연결을 해라
+- connect 함수를 통해서 이뤄진다.
+- 클라이언트 프로그램에서는 sockaddr_in 구조체 변수를 하나 선언해서, 이를 연결할 서버 소켓의 IP와 PORT번호로 초기화한 다음에 connect 함수를 호출한다.
+
+------
+
+#### INADDR_ANY
+
+```c
+struct sockddr_in addr;
+char *serv_port="9190";
+memset(&addr, 0, sizeof(addr));
+addr.sin_family=AF_INET;
+addr.sin_addr.s_addr=htonl(INADDR_ANY);
+addr.sin_port=htos(atoi(serv_port));
+```
+
+현재 실행중인 컴퓨터의 IP를 소켓에 부여할때 사용되는 것이 INADDR_ANY이다. 소켓의 IP주소를 이렇게 초기화할 경우 소켓이 동작하는 컴퓨터의 IP주소가 자동으로 할당되기 때문에 IP주소를 직접 입력하는 소고를 덜 수 있다.이는 서버 프로그램의 구현에 주로 사용된다.
+
+------
+
+#### Chapter 01의 예제 실행방식의 고찰
+
+##### ./hserver 9190
+
+서버의 실행방식, 서버의 리스닝 소켓 주소는 INADDR_ANY로 지정을 하니, 소켓의 PORT번호만 인자를 통해 전달하면 된다.
+
+##### ./hclient 127.0.0.1 9190
+
+클라이언트의 실행방식, 연결할 서버의 IP와 PORT번호를 인자로 전달한다. 
+
+127.0.0.1은 루프백 주소라 하며, 이는 클라이언트를 실행하는 컴퓨터의 IP주소를 의미한다.
+
+루프백 주소를 전달한 이유는, 서버와 클라이언트를 한 대의 컴퓨터에서 실행시켰기 때문이다.
+
+------
+
+#### 소켓에 인터넷 주소 할당하기
+
+```c
+#include <sys/socket.h>
+
+int bind(int sockfd, struct sockaddr *myaddr, socklen_t addrlen);
+//성공 시 0, 실패 시 -1 반환
+```
+
+- sockfd : 주소정보를 (IP와 PORT를)할당할 소켓의 파일 디스크립터
+- myaddr : 할당하고자 하는 주소정보를 진는 구조체 변수의 주소 값.
+- addrlen : 두 번째 인자로 전달된 구조체 변수의 길이정보
+
+위의 함수호출이 성공하면, 첫 번째 인자에 해당하는 소켓에 두 번째 인자로 전달된 주소정보가 할당된다.
+
+```
+int serv_sock;
+struct sockaddr_in serv_addr;
+char *serv_port="9190";
+
+/*서버 소켓(리스닝 소켓) 생성*/
+serv_sock=socket(PF_INET,SOCK_STREAM, 0);
+
+/*주소정보 초기화*/
+memset(&serv_addr, 0, sizeof(serv_addr));
+serv_addr.sin.family=AF_INET;
+serv_addr.sin_addr.s_addr=htonl(INADDR_ANY);
+serv_addr.sin_port=htons(atoi(serv_port));
+
+/*주소정보 할당*/
+bind(serv_sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+. . . .
+```
+
+클라이언트 프로그램이 아닌, 서버 프로그램이라면 위의 코드구성을 기본적으로 갖추게 된다. 물론 위에서 보이지 않은 오류처리에 대한 코드는 추가로 포함이 된다.
+
+------
+
+### 03-5. 윈도우 기반으로 구현하기
+
+앞에서 설명한 구조체 sockaddr_in이나, 여러 가지 변환함수들이 윈도우에서 동일한 이름으로 존재하며, 사용방법과 의미까지 동일하다.
+
+#### 함수 htons, htonl의 윈도우 기반 사용 예
+
+라이브러리 초기화에 필요한 WSAStarup 함수의 호출과 헤더파일 winsock2.h에 대한 #include문의 추가 이외에 달라진 점은 없다.
+
+```c
+int main(int argc, char *argc[])
+{
+	WSADATA wsaData;
+    unsigned short host_port = 0x1234;
+    unsigned short net_port;
+    unsigned long host_addr=0x12345678;
+    unsigned long net_addr;
+    
+    if(WSAStartup(MAKEWORD(2,2),&wsaData)!= 0)
+        ErrorHandling("WSAStartup() error!");
+    
+    net_port=htos(host_port);
+    net_addr=htol(host_addr);
+    
+    printf("Host ordered port: %#x \n", host_port);
+    printf("Network ordered port: %#x \n", net_port);
+    printf("Host ordered address: %#lx \n", host_addr);
+    printf("Networ ordered address: %lx \n", net_addr);
+    WSACleanup();
+    retrun 0;
+}
+```
+
+**[실행 결과]**
+
+```
+Host ordered port: 0x1234
+Network ordered port: 0x3412
+Host ordered address: 0x12345678
+Network ordered address: 0x78563412
+```
+
+------
+
+#### 함수 inet_addr, inet_ntoa의 윈도우 기반 사용 예
+
+윈도우에서는 inet_aton 함수가 존재하지 않는다.
+
+```c
+/* inet_addr 함수의 호출 예*/
+{
+   char *addr="127.212.124.78";
+    unsigned long conv_addr=inet_addr(addr);
+    if(conv_addr==INADDR_NONE)
+        printf("Error occured! \n");
+    else
+        printf("Network ordered integer addr: %#lx \n", conv_addr);
+}
+
+/*inet_ntoa 함수의 호출 예*/
+{
+    struct sockaddr_in addr;
+    char *strPtr;
+    char *strArr[20];
+    
+    addr.sin.addr.s_adr=htol(0x1020304);
+    strPtre=inet_ntoa(addr.sin_addr);
+    strcpy(strArr,strPtr);
+    printf("Dotted-Decimal notation3 %s \n",strArr);
+        
+}
+```
+
+위 예제에서 main 함수 중간에 변수선언을 할 수 있도록, 그리고 각각의 함수호출의 예를 구분지어서 볼 수 있도록 중괄호를 사용하였는데 이렇게 중간에 중괄호를 삽입하면 해당 영역의 시작부분에 지역변수를 선언할 수 있다. 이때 선언된 지역변수는 중괄호를 빠져나가면 소멸이 된다.
+
+**[실행결과]**
+
+```
+Network ordred integer addr : 0x4e7cd47f
+Dotted-Decimal notaion3 1.2.3.4
+```
+
+------
+
+#### 윈도우에서의 소켓 주소할당
+
+```c
+SOCKET servSock;
+struct sockaddr_in servAddr;
+char *servPort ="9190";
+/*서버 소켓 생성*/
+servSock=socket(PF_INET, SOCK_STREAM,0);
+
+/*주소정보 초기화*/
+memset(&servAddr,0,sizeof(servAddr));
+servAddr.sin_family = AF_INET;
+servAddr.sin_addr.s_addr=htonl(INADDR_ANY);
+servAdd.sin_port=htons(atoi(servPort));
+
+/*주소정보 할당*/
+bind(servSock, (struct sockaddr*)&servAddr, sizeof(servAddr));
+```
+
+윈도우에서 소켓에 인터넷 주소를 할당하는 과정은 리눅스에서의 소켓 주소할당과 차이가 없다. bind 함수의 의미와 매개변수 및 반환형의 형태가 완전히 동일하기 때문이다.
+
+------
+
+#### WSAstringToAddress
+
+winsock2에서 추가된 변환함수는 두 가지이며 이 둘은 inet_ntoa, inet_addr 함수와 기능은 같으나 다양한 프로토콜(IPv4뿐만이 아니라 IPv6에서도)에 적용이 가능하다는 장점이 있다. 하지만 inet_ntoa, inet_addr 함수를 사용할 경우 리눅스 기반에서 윈도우 기반으로, 그리고 그 반대로도 프로그램의 변경이 용이하지만, 다음 두 함수를 사용 하면 윈도우에 종속적인 코드가 만들어지기 때문에 다른 운영체제로의 이식성이 떨어진다.
+
+정리 : 주소정보를 나타내는 문자열을 가지고, 주소정보 구조체 변수를 적절히 채워 넣을 때 호출하는 함수 IPv6 기반에서도 사용이 가능하다. 단, 이 함수를 사용하면, 윈도우에 의존적인 코드가 구성 된다.
+
+```c
+#include <winsock2.h>
+
+INT WSAStringToAddress(
+    LPTSTR AddressString, INT AddressFamily, LPWSAPROTOCL_INFO lpProtocolInfo,
+    LPSOCKADDR lpAddress, LPINT lpAddressLength
+);
+//성공 시 0, 실패 시 SOCKET_ERROR반환
+```
+
+- AddressString : IP와 PORT번호를 담고 있는 문자열의 주소 값 전달.
+- AddressFamily : 첫 번째 인자로 전달된 주소정보가 속하는 주소체계 정보전달.
+- lpProtocolInto : 프로토콜 프로바이터(Provider)설정, 일반적으로 NULL전달.
+- lpAdress : 주소정보를 담을 구조체 변수의 주소 값 전달.
+- lpAddressLength : 네 번째 인자로 전달된 주소 값의 변수 크기를 담고 있는 변수의 주소 값 전달.
+
+- 이 함수의 정의에 등장하는 각종 자료형의 이름은 기본 자료형에 대한 typedef 선언이 대부분이다.
+
+------
+
+#### WSAAdressToString
+
+WSAStringToAddress 함수와 반대의 기능을 제공한다. 즉, 구조체 변수에 저장된 데이터를 참조하여 주소정보를 담고 있는 문자열을 만들어서 반환한다.
+
+```c
+#inlude<winsock2.h>
+
+INT WSAAdressToString(
+	LPSOCKADDR lpsaAddress, DWORD dwAddressLength,
+    LPWAPROTOCOL_INFO lpProtocolInfo, LPTSTR lpszAddressString,
+    LPDWORD lpdwAddressStringLength
+);
+
+//성공 시 0, 실패 시 SOCKET_ERROR 반환
+```
+
+- lpsaAddres : 문자열로 변환할 주소정보를 지니는 구조체 변수의 주소 값 전달.
+- dwAddressLength : 첫 번째 인자로 전달된 구조체 변수의 크기 전달.
+- lpProtocolInfo : 프로토콜 프로바이더(Provider) 설정, 일반적으로 NULL 전달.
+- lpszAdressString: 문자열로 변환된 결과를 저장할 배열의 주소 값 전달.
+- lpdwAddressStringLength : 네 번째 인자로 전달된 주소 값의 배열 크기를 담고 있는 변수의 주소 값 전달.
+
+------
+
+#### WSAStringToAddress & WSAAddressToString 의 사용 예
+
+```c
+char *strAdr="203.211.218.102:9190";
+
+char strAddrBuf[50];
+SOCKADDR_IN servAddr;
+int size;
+
+WSADATA wsaData;
+WSAStartup(MAKEWORD(2,2),&wsaData);
+size=sizeof(servAddr);
+WSAStringToAddress(
+    strAddr, AF_INET, NULL, (SOCKADDR*)&servAddr, &size);
+size=sizeof(strAddrBuf);
+WSAAddressToString(
+(SOCKADDR*)&servAddr, sizeof(servAddr),NULL, strAddrBuf, &size);
+printf("Second conv result: %s \n",strAddrBuf);
+WSACleanup();
+return 0;
+```
+
+위 예제에서 SOCKADDR_IN형 변수를 선언하고 있는데 sockaddr_in과 같은 것으로 선언의 편의를 위해 다음과 같이 typedef 선언이 되어있어서 활용한 것이다.
+
+typedef struct sockaddr_in SOCKADDR_IN;
+
+**[실행 결과]**
+
+```
+Second conv result : 203.211.218.102:9190
 ```
 
 ------
