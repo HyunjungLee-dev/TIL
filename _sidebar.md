@@ -24,7 +24,8 @@
   * [Function Object](C++/Function_Object.md)
   * [Template](C++/template.md)
   
-* **STL**
+* **STL(*Standard Template Library*)**
+  
   * [STL](STL/STL.md)
   * [vector](STL/vector.md)
   

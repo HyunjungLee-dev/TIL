@@ -1578,3 +1578,90 @@ int connect(int sock,const struct sockaddr *servaddr, socklen_t addrlen);
 ![캡처](https://user-images.githubusercontent.com/54986748/94238403-4ac0c980-ff4b-11ea-9604-bff71434c7c7.PNG)
 
 T서버는 소켓 생성 이후에 bind, listen 함수의 연이은 호출을 통해 대기상태에 들어가고 클라이언트는 connect 함수호출을 통해서 연결요청을 하게 된다. 확인할 사항은, 서버의 listen 함수호출 이후에야 클라이언트의 connect 함수호출이 유효하다는 점이다. 뿐만 아니라 클라이언트가 connect 함수를 호출하기에 앞서 서버가 accept 함수를 먼저 호출할 수 있다. 물론 이때 클라이언트가 connect 함수를 호출할 때까지는 서버는 accept 함수가 호출된 위치에서 블로킹 상태에 놓이게 된다.
+
+------
+
+### 04-3. Iterative 기반의 서버, 클라이언트의 구현
+
+#### Iterative 서버의 구현
+
+![캡처](https://user-images.githubusercontent.com/54986748/94341910-52b26380-0048-11eb-914c-f93b3020322d.PNG)
+
+에코 서버와 에코 클라이언트를 구현에 앞서 Iterative 서버의 구현에 대해서 이야기할 필요가 있다. 여기서 에코 서버는 클라이언트가 전송하는 문자열 데이터를 그대로 재전송하는, 말 그대로 문자열 데이터를 에코(echo)시키는 서버이다.
+
+위의 그림과 같이 반복적으로 accept 함수를 호출하면, **계속해서 클라이언트의 연결요청을 수락할 수 있다**. 그러나, 동시에 둘 이상의 클라이언트에게 서비스를 제공할 수 있는 모델은 아니다. 이후에 프로세스와 쓰레드에 대해 공부하고 나면 동시에 둘 이상의 클라이언트에게 서비스를 제공하는 서버를 만들 수 있게 된다.
+
+------
+
+#### Iterative 에코 서버와 에코 클라이언트의 일부
+
+
+
+**[서버 코드의 일부]**
+
+```c
+for(i=0; i<5; i++)
+{
+	clnt_sock=accept(serv_sock, (stuct sockaddr*)&clnt_adr, &clnt_adr_sz);
+    if(clnt_sock==-1)
+        error_handling("accept() error");
+    else
+        printf("Connected client %d \n", i+1);
+    
+    while((str_len=read(clnt_sock, message, BUF_SIZE))!= 0)
+        write(clnt_sock, message, str_len);
+    close(clnt_sock);
+}
+```
+
+**[클라이언트 코드의 일부]**
+
+```c
+while(1)
+{
+    fputs("Input message(Q to quit) : ", stdout);
+    fgets(message, BUF_SIZE, stdin);
+    
+    if(!strcmp(message,"q\n") || !strcmp(message,"Q\n"))
+        break;
+    write(sock, message, strlen(message));
+    str_len = read(sock, message, BUF_SIZE-1);
+    message[str_len]=0;
+    printf("Message from server: %s", message);
+}
+```
+
+------
+
+#### 에코 클라이언트의 문제점
+
+**[제대로 동작은 하나 문제의 발생 소지가 있는 TCP 에코 클라이언트의  코드]**
+
+```c
+write(sock, message, strlen(message));
+str_len=read(sock, message, BUF_SIZE-1);
+message[str_len]=0;
+printf("Message form server: %s", message);
+```
+
+TCP의 데이터송수신에는 경계가 존재하지 않는다. 클라이언트는 TCP 클라이언트이기 때문에 둘 이상의 write 함수호출로 전달된 문자열 정보가 묶여서 한번에 서버로 전송될 수 있다. 그러한 상황이 발생하면 클라이언트는 한번에 둘 이상의 문자열 정보를 서버로부터 되돌려 받아서, 원하는 결과를 얻지 못할 수 있다. 위의 코드는 다음 사항을 가정하고 있다.
+
+"한 번의 read 함수호출로 앞서 전송된 문자열 전체를 읽어 들일 수 있다."
+
+그러나 이는 잘못된 가정이다. TCP에는 데이터의 경계가 존재하지 않기 때문에 서버가 전송한 문자열의 일부만 읽혀질 수도 있다.
+
+------
+
+### 04-4. 윈도우 기반으로 구현하기
+
+#### 윈도우 기반으로 변경할 때 필요한 것
+
+1. WSAStartup, WSACleanup 함수호출을 통한 소켓 라이브러리의 초기화와 해제
+2. 자료형과 변수의 이름을 윈도우 스타일로 변경하기
+3. 데이터 송수신을 위해서 read, write 함수 대신 recv, send 함수 호출하기
+4. 소켓의 종료를 위해서 close 대신 closesocket 함수 호출하기
+
+마치 공식을 적용하듯이(소스의 내용을 잘 모르는 상태에서도) 윈도우 기반으로 예제를 변경할 수도 있다. 그만큼 리눅스 기반 예제와 윈도우 기반 예제는 동일하다.
+
+------
+
