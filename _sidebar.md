@@ -1,6 +1,6 @@
-* **Weekly**
+* **TIL**
   
-  * [2020-07-28~](weektil/2020-07-28~.md)
+  * [2020](til/2020.md)
   
 * **Machine Learning**
 
@@ -24,7 +24,7 @@
   * [Function Object](C++/Function_Object.md)
   * [Template](C++/template.md)
   
-* **STL(*Standard Template Library*)**
+* **STL**
   
   * [STL](STL/STL.md)
   * [vector](STL/vector.md)
