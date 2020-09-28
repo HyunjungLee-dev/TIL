@@ -1,6 +1,7 @@
 * **TIL**
   
-  * [2020](til/2020.md)
+  * [2020Y 7M/8M](til/2020Y_7M_8M.md)
+  * [2020Y 9M](til/2020Y_9M.md)
   
 * **Machine Learning**
 
